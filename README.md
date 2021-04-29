@@ -78,7 +78,8 @@ Configure the root of your repository with the following files and directories. 
 
 This api supports a mongoose 'user' model that is represented by the following:
 
-```const userSchema = new mongoose.Schema({
+```
+const userSchema = new mongoose.Schema({
   username: {type: String, required: true, unique: true},
   email: {type: String, required: true, unique: true},
   password: {type: String, required: true},
