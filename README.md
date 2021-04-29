@@ -72,6 +72,8 @@ Configure the root of your repository with the following files and directories. 
 
 -   supertest
 
+-   morgan
+
 ---
 
 ## Data Models
