@@ -4,7 +4,7 @@
 
 [GitHub](myspace.com)
 
-[Heroku](myspace.com)
+[Heroku](https://auth-module-final-teamsecy.herokuapp.com/)
 
 ## Collaborators
 
