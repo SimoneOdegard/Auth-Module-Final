@@ -2,7 +2,7 @@
 
 ![example workflow](https://github.com/SimoneOdegard/Auth-Module-Final/actions/workflows/node.js.yml/badge.svg)
 
-[GitHub](myspace.com)
+[GitHub](https://github.com/SimoneOdegard/Auth-Module-Final)
 
 [Heroku](https://auth-module-final-teamsecy.herokuapp.com/)
 
