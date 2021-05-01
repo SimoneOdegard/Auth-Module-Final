@@ -1,108 +1,77 @@
 'use strict';
 
-process.env.SECRET = "toes";
+process.env.SECRET = "secret";
 
-const server = require('../src/server.js').server;
+const { server }= require('../src/server.js');
 const supergoose = require('@code-fellows/supergoose');
-const bearer = require('../src/auth/middleware/bearer.js');
+// const supertest = require('supertest')
+// const bearer = require('../src/auth/middleware/bearer.js');
 
 const mockRequest = supergoose(server);
 
-let users = {
-  admin: { username: 'admin', password: 'password', role: 'admin' },
-  editor: { username: 'editor', password: 'password', role: 'editor' },
-  user: { username: 'user', password: 'password', role: 'user' },
-};
+let users = [
+  { username: 'admin', password: '1234', role: 'admin'},
+  { username: 'editor', password: '1234', role: 'editor'},
+  { username: 'user', password: '1234', role: 'user'},
+  { username: 'user'}
+]
 
-describe('Auth Router', () => {
+describe('Error Handlers', () => {
+  it('should respond with 404 on not found route', async() => {
+   const response = await mockRequest.get('/wrong-route')
 
-  Object.keys(users).forEach(userType => {
+   expect(response.status).toBe(404)
+  })
+})
 
-    describe(`${userType} users`, () => {
 
-      it('can create one', async () => {
+describe('Auth Routes', () => {
+  it('should sign up a new user', async() => {
+    const response = await mockRequest.post('/signup').send(users[1]);
 
-        const response = await mockRequest.post('/signup').send(users[userType]);
-        const userObject = response.body;
+    expect(response.status).toBe(201);
+    expect(response.body.token).toBeDefined();
+    expect(response.body.user.username).toEqual('editor');
+  })
 
-        expect(response.status).toBe(201);
-        expect(userObject.token).toBeDefined();
-        expect(userObject.user._id).toBeDefined();
-        expect(userObject.user.username).toEqual(users[userType].username)
+  it('should thow an error if user did not provide information', async() => {
+    const response = await mockRequest.post('/signup').send(users[3]);
 
-      });
+    expect(response.status).toBe(500);
+    expect(response.body.token).not.toBeDefined();
+    expect(response.body.user).toBe(undefined);
+  })
 
-      it('can signin with basic', async () => {
+  it('should sign in a user with basic authentication', async() => {
+    const response = await mockRequest.post('/signin')
+      .auth(users[1].username, users[1].password)
 
-        const response = await mockRequest.post('/signin')
-          .auth(users[userType].username, users[userType].password);
+      expect(response.status).toBe(200);
+      expect(response.body.token).toBeDefined();
+      expect(response.body.user.username).toEqual('editor')
+  })
 
-        const userObject = response.body;
-        expect(response.status).toBe(200);
-        expect(userObject.token).toBeDefined();
-        expect(userObject.user._id).toBeDefined();
-        expect(userObject.user.username).toEqual(users[userType].username)
+  it('should not sign in a user with wrong password or username', async() => {
+    const response = await mockRequest.post('/signin')
+      .auth(users[2].username, users[2].password)
 
-      });
+      expect(response.status).toBe(403);
+      expect(response.body).toEqual({});
+      expect(response.body.token).not.toBeDefined();
+  })
 
-      // it('can signin with bearer', async () => {
 
-      //   // First, use basic to login to get a token
-      //   const response = await mockRequest.post('/signin')
-      //     .auth(users[userType].username, users[userType].password);
+  it('should let access a route with bearer and ACL authentification', async() => {
+    const signup = await mockRequest.post('/signup').send(users[0])
+    const signin = await mockRequest.post('/signin')
+      .auth(users[0].username, users[0].password)
+    
+    const response = await mockRequest.get('/users')
+      .set('Authorization', `Bearer ${signin.body.token}`)
 
-      //   const token = response.body.token;
+    expect(response.status).toBe(200)
+    expect(response.body).toEqual(['editor', 'admin'])
+  })
 
-      //   // First, use basic to login to get a token
-      //   const bearerResponse = await mockRequest
-      //     .get('/users')
-      //     .set('Authorization', `Bearer ${token}`)
-          
-      //   // Not checking the value of the response, only that we "got in"
-      //   expect(bearerResponse.status).toBe(200);
 
-      // });
-
-    });
-
-    describe('bad logins', () => {
-      it('basic fails with known user and wrong password ', async () => {
-
-        const response = await mockRequest.post('/signin')
-          .auth('admin', 'xyz')
-        const userObject = response.body;
-
-        expect(response.status).toBe(403);
-        expect(userObject.user).not.toBeDefined();
-        expect(userObject.token).not.toBeDefined();
-
-      });
-
-      it('basic fails with unknown user', async () => {
-
-        const response = await mockRequest.post('/signin')
-          .auth('nobody', 'xyz')
-        const userObject = response.body;
-
-        expect(response.status).toBe(403);
-        expect(userObject.user).not.toBeDefined();
-        expect(userObject.token).not.toBeDefined()
-
-      });
-
-      it('bearer fails with an invalid token', async () => {
-
-        // First, use basic to login to get a token
-        const bearerResponse = await mockRequest
-          .get('/users')
-          .set('Authorization', `Bearer foobar`)
-
-        // Not checking the value of the response, only that we "got in"
-        expect(bearerResponse.status).toBe(403);
-
-      })
-    })
-
-  });
-
-});
+})
