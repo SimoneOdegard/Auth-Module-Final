@@ -135,4 +135,4 @@ This route will show you a list of all the users. you can grab a specific user u
 
 -   DELETE `/users/:id`
 
-This route is used to delete users in the database.
+This route is used to delete users in the database
