@@ -1,6 +1,6 @@
 # ![cf](https://i.imgur.com/7v5ASc8.png) Lab 09: Auth-Module
 
-![example workflow](https://github.com/SimoneOdegard/Auth-Module-Final/actions/workflows/node.js.yml/badge.svg)
+![example workflow](https://github.com/SimoneOdegard/Auth-Module-Final/actions/workflows/javascript.js.yml/badge.svg)
 
 [GitHub](https://github.com/SimoneOdegard/Auth-Module-Final)
 
