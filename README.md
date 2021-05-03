@@ -82,7 +82,6 @@ This api supports a mongoose 'user' model that is represented by the following:
 
 ```
 const userSchema = new mongoose.Schema({
-  username: {type: String, required: true, unique: true},
   email: {type: String, required: true, unique: true},
   password: {type: String, required: true},
 });
@@ -95,7 +94,7 @@ const userSchema = new mongoose.Schema({
 -   POST `/signup`
 
 ```
-{"username": "Brian", "email": "BikeChamp88@gmail.com", "password": "123456"}
+{ "email": "BikeChamp88@gmail.com", "password": "123456"}
 ```
 
 -   POST `/signin`
