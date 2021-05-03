@@ -14,7 +14,7 @@ Chris Gantt, Elijah Prom, Simone Odegard, Yuliya Barysevich
 
 ## Overview
 
-This App is a back end API that connects to the [front end](something.com). The back end allows a user to Sign up, sign in, create, update and delete based on the users authorization level. The four levels are regular, writer, editor, and admin user.
+This App is a back end API that connects to the [front end](https://github.com/ganttArt/Auth-Module-Final-FrontEnd). The back end allows a user to Sign up, sign in, create, update and delete based on the users authorization level. The four levels are regular, writer, editor, and admin user.
 
 ---
 
